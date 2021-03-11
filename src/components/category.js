@@ -14,7 +14,7 @@ class Category extends React.Component {
     return (
       category.map((item, i) => (
         <li key={i} className={this.props.selected === item ? 'is-active' : ''}>
-          <a onClick={() => this.handleTabChange(item)}>
+          <a href="/#" onClick={() => this.handleTabChange(item)}>
             <span>{item}</span>
           </a>
         </li>

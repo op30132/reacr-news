@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 function NewsList({ newsList, handleNewsChange, selectedNewsIdx }) {
   const [key, setKey] = useState('');
+
   return (
     <div className="panel" style={{ height: '880px', overflowY: 'auto' }}>
       <p className="panel-heading">

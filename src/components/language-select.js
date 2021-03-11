@@ -1,14 +1,13 @@
 import React from 'react';
-import {setQueryParams} from '../services/new-service';
 
 class LanguageSelect extends React.Component {
   constructor(props) {
     super(props);
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
+
   handleSelectChange(e) {
     this.props.onSelectChange(e.target.value);
-    setQueryParams({country: e.target.value})
   }
   render() {
     const languageList = this.props.languageList;

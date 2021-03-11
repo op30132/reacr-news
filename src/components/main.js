@@ -2,13 +2,16 @@ import React from 'react';
 import NewsContent from './news-content';
 import NewsList from './news-list';
 import Category from './category';
-import {getArticles, getDefaultCate} from '../services/new-service';
+import { getArticles, getDefaultCate } from '../services/new-service';
 import WithLoading from '../hoc/loading';
+import { paramsContext } from '../reducer/newsReducer';
 
 const ListWithLoading = WithLoading(NewsList);
 const ContentWithLoading = WithLoading(NewsContent);
+const [state, dispatch] = React.useContext(paramsContext);
 
 class Main extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -33,9 +36,9 @@ class Main extends React.Component {
     });
   }
   pageChange(diff) {
-    if((this.state.selectedNewsIdx===0 && diff===-1) || (this.state.selectedNewsIdx === this.state.newsList.length && diff===1)) return;
+    if ((this.state.selectedNewsIdx === 0 && diff === -1) || (this.state.selectedNewsIdx === this.state.newsList.length && diff === 1)) return;
     this.setState((state) => ({
-      selectedNewsIdx: state.selectedNewsIdx+diff
+      selectedNewsIdx: state.selectedNewsIdx + diff
     }))
   }
   componentDidMount() {
@@ -60,7 +63,7 @@ class Main extends React.Component {
         <section>
           <div className="tabs is-centered is-boxed is-medium">
             <ul>
-              <Category 
+              <Category
                 category={this.state.cate}
                 onTabChange={this.handleTabChange}
                 selected={this.state.selectedCate}
@@ -72,16 +75,16 @@ class Main extends React.Component {
           <div className="container is-fluid  columns">
             <div className="column is-4">
               <section name="news-list">
-                <ListWithLoading 
+                <ListWithLoading
                   isLoading={this.state.loading}
-                  newsList={this.state.newsList} 
+                  newsList={this.state.newsList}
                   selectedNewsIdx={this.state.selectedNewsIdx}
                   handleNewsChange={this.handleNewsChange}></ListWithLoading>
               </section>
             </div>
             <div className="column is-8">
               <section name="news-content">
-                <ContentWithLoading 
+                <ContentWithLoading
                   isLoading={this.state.loading}
                   content={this.state.newsList[this.state.selectedNewsIdx]}
                   pageChange={this.pageChange}

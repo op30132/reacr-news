@@ -7,7 +7,8 @@ import { ParamsContext } from '../context/params-context';
 import { FETCHING, SUCCESS, ERROR } from "../hook/news/actionTypes";
 import { getNewsApi, getCateList } from '../services/new-service';
 import {debounce} from '../tool/debounce';
-function Main() {
+
+export default function Main() {
   const [state, dispatch] = useContext(ParamsContext);
   const [selectedNewsIdx, setSelectedNewsIdx] = useState(0)
   const [{ status, response }, makeRequest] = useApiRequest(getNewsApi(state));
@@ -95,5 +96,3 @@ function Main() {
     </div>
   )
 }
-
-export default Main;

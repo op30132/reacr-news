@@ -3,7 +3,8 @@ import LanguageSelect from './language-select';
 import { useContext } from 'react';
 import { ParamsContext } from '../context/params-context';
 import { getLanguageList } from '../services/new-service';
-function Header() {
+
+export default function Header() {
   const [state, dispatch] = useContext(ParamsContext);
   const onSelectChange = (code) => dispatch({
     type: "UPDATE",
@@ -55,4 +56,3 @@ function Header() {
     </nav>
   )
 }
-export default Header;

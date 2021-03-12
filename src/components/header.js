@@ -1,16 +1,14 @@
 import React from 'react';
 import LanguageSelect from './language-select';
-import { useState } from 'react';
-
+import { useContext } from 'react';
+import { ParamsContext } from '../context/params-context';
+import { getLanguageList } from '../services/new-service';
 function Header() {
-  const { queryParam, setQueryParam } = useParamsContext()
-
-  const languageList = [
-    { code: 'cn', name: 'China' },
-    { code: 'jp', name: 'Japan' },
-    { code: 'us', name: 'United States' },
-  ]
-  const [selectedLan, setSelectedLan] = useState(queryParam.country)
+  const [state, dispatch] = useContext(ParamsContext);
+  const onSelectChange = (code) => dispatch({
+    type: "UPDATE",
+    payload: { country: code }
+  })
 
   return (
     <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -34,12 +32,9 @@ function Header() {
             <div className="control is-expanded  has-icons-left pr-2">
               <div className="select is-info">
                 <LanguageSelect
-                  languageList={languageList}
-                  onSelectChange={e => {
-                    setSelectedLan(e);
-                    setQueryParam({ country: e })
-                  }}
-                  selected={selectedLan}
+                  languageList={getLanguageList()}
+                  onSelectChange={onSelectChange}
+                  selected={state.country}
                 ></LanguageSelect>
               </div>
               <span className="icon is-medium is-left">

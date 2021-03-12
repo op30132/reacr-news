@@ -13,7 +13,7 @@ class Category extends React.Component {
     const selected = this.props.selected;
     return (
       category.map((item, i) => (
-        <li key={i} className={this.props.selected === item ? 'is-active' : ''}>
+        <li key={i} className={selected === item ? 'is-active' : ''}>
           <a href="/#" onClick={() => this.handleTabChange(item)}>
             <span>{item}</span>
           </a>

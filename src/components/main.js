@@ -1,101 +1,99 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import NewsContent from './news-content';
 import NewsList from './news-list';
 import Category from './category';
-import { getArticles, getDefaultCate } from '../services/new-service';
-import WithLoading from '../hoc/loading';
-import { paramsContext } from '../reducer/newsReducer';
+import useApiRequest from "../hook/news/useApiRequest";
+import { ParamsContext } from '../context/params-context';
+import { FETCHING, SUCCESS, ERROR } from "../hook/news/actionTypes";
+import { getNewsApi, getCateList } from '../services/new-service';
+import {debounce} from '../tool/debounce';
+function Main() {
+  const [state, dispatch] = useContext(ParamsContext);
+  const [selectedNewsIdx, setSelectedNewsIdx] = useState(0)
+  const [{ status, response }, makeRequest] = useApiRequest(getNewsApi(state));
 
-const ListWithLoading = WithLoading(NewsList);
-const ContentWithLoading = WithLoading(NewsContent);
-const [state, dispatch] = React.useContext(paramsContext);
+  const pageChange = (diff) => {
+    if ((selectedNewsIdx === 0 && diff === -1) || (selectedNewsIdx === response.articles.length && diff === 1)) return;
+    setSelectedNewsIdx(selectedNewsIdx + diff)
+  }
+  const onTabChange = (cate) => dispatch({
+    type: "UPDATE",
+    payload: { category: cate }
+  });
 
-class Main extends React.Component {
+  const onKeyChange = debounce((e) => dispatch({
+    type: "UPDATE",
+    payload: { q: e.target.value }
+  }), 1000)
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      cate: ['Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'],
-      selectedCate: getDefaultCate(),
-      newsList: [],
-      selectedNewsIdx: 0,
-      loading: true
-    };
-    this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleNewsChange = this.handleNewsChange.bind(this);
-    this.pageChange = this.pageChange.bind(this)
-  }
-  handleTabChange(selectedCate) {
-    this.setState({
-      selectedCate: selectedCate
-    });
-  }
-  handleNewsChange(index) {
-    this.setState({
-      selectedNewsIdx: index
-    });
-  }
-  pageChange(diff) {
-    if ((this.state.selectedNewsIdx === 0 && diff === -1) || (this.state.selectedNewsIdx === this.state.newsList.length && diff === 1)) return;
-    this.setState((state) => ({
-      selectedNewsIdx: state.selectedNewsIdx + diff
-    }))
-  }
-  componentDidMount() {
-    this.loadData();
-  }
-  async loadData() {
-    this.setState({ loading: true });
-    const list = await getArticles()
-    this.setState({
-      loading: false,
-      newsList: list
-    })
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.value !== this.state.value) {
-      this.loadData();
-    }
-  }
-  render() {
-    return (
-      <div>
-        <section>
-          <div className="tabs is-centered is-boxed is-medium">
-            <ul>
-              <Category
-                category={this.state.cate}
-                onTabChange={this.handleTabChange}
-                selected={this.state.selectedCate}
-              ></Category>
-            </ul>
+  useEffect(() => { makeRequest() }, [state]);
+
+  return (
+    <div>
+      <section>
+        <div className="tabs is-centered is-boxed is-medium">
+          <ul>
+            <Category
+              category={getCateList()}
+              onTabChange={onTabChange}
+              selected={state.category}
+            ></Category>
+          </ul>
+        </div>
+      </section>
+      <section>
+        <div className="container is-fluid  columns">
+          <div className="column is-4">
+            <section name="news-list">
+              <div className="panel" style={{ height: '880px', overflowY: 'auto' }}>
+                <p className="panel-heading">
+                  News List
+                </p>
+                <div className="panel-block">
+                  <p className="control">
+                    <input className="input" type="text" placeholder="Keyword" onChange={onKeyChange} />
+                  </p>
+                </div>
+                {status === FETCHING && (
+                  <p>Fetching...</p>
+                )}
+                {status === SUCCESS && (
+                  response.articles.length > 0 ? 
+                  <NewsList
+                    newsList={response.articles}
+                    selectedNewsIdx={selectedNewsIdx}
+                    handleNewsChange={setSelectedNewsIdx}></NewsList> 
+                  : <p>No data</p>
+                )}
+                {status === ERROR && (
+                  <p>error, please retry</p>
+                )}
+              </div>
+            </section>
           </div>
-        </section>
-        <section>
-          <div className="container is-fluid  columns">
-            <div className="column is-4">
-              <section name="news-list">
-                <ListWithLoading
-                  isLoading={this.state.loading}
-                  newsList={this.state.newsList}
-                  selectedNewsIdx={this.state.selectedNewsIdx}
-                  handleNewsChange={this.handleNewsChange}></ListWithLoading>
-              </section>
-            </div>
-            <div className="column is-8">
-              <section name="news-content">
-                <ContentWithLoading
-                  isLoading={this.state.loading}
-                  content={this.state.newsList[this.state.selectedNewsIdx]}
-                  pageChange={this.pageChange}
-                ></ContentWithLoading>
-              </section>
-            </div>
+          <div className="column is-8">
+            <section name="news-content">
+              {status === FETCHING && (
+                <p>Fetching...</p>
+              )}
+              {status === SUCCESS && (
+                response.articles.length > 0 ? 
+                <NewsContent
+                  content={response.articles[selectedNewsIdx]}
+                  pageChange={pageChange}
+                ></NewsContent> : 
+                <p>No data</p>
+              )}
+              {status === ERROR && (
+                <p>error, please retry</p>
+              )}
+
+            </section>
           </div>
-        </section>
-      </div>
-    )
-  }
+        </div>
+      </section>
+    </div>
+  )
 }
 
 export default Main;

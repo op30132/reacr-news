@@ -3,7 +3,7 @@ import LanguageSelect from './language-select';
 import { useContext } from 'react';
 import { ParamsContext } from '../context/params-context';
 import { getLanguageList } from '../services/new-service';
-
+import { NavLink } from "react-router-dom";
 export default function Header() {
   const [state, dispatch] = useContext(ParamsContext);
   const onSelectChange = (code) => dispatch({
@@ -21,12 +21,8 @@ export default function Header() {
       </div>
       <div id="navbarBasicExample" className="navbar-menu">
         <div className="navbar-start">
-          <a href="/#" className="navbar-item">
-            Home
-          </a>
-          <a href="/#" className="navbar-item">
-            Documentation
-          </a>
+          <NavLink className="navbar-item" to="/" activeClassName="active">Home</NavLink>
+          <NavLink className="navbar-item" to="/document" activeClassName="active">Documentation</NavLink>
         </div>
         <div className="navbar-end">
           <div className="navbar-item">

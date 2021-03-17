@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { ParamsContext } from '../../context/params-context';
 import reducer from './param-reducer';
 
@@ -11,7 +11,7 @@ const defaultParams = {
 };
 
 const ParamsContextProvider = props => {
-  const [state, dispatch] = React.useReducer(reducer, defaultParams);
+  const [state, dispatch] = useReducer(reducer, defaultParams);
 
   return (
     <ParamsContext.Provider value={[state, dispatch]}>

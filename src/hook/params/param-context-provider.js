@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { ParamsContext } from '../../context/params-context';
 import reducer from './param-reducer';
 
@@ -7,11 +7,11 @@ const defaultParams = {
   category: 'Business',
   q: '',
   pageSize: 10,
-  apiKey: '5c272dc78f954b94855e059b7e2dabc2'
+  apiKey: process.env.REACT_APP_API_KEY
 };
 
 const ParamsContextProvider = props => {
-  const [state, dispatch] = React.useReducer(reducer, defaultParams);
+  const [state, dispatch] = useReducer(reducer, defaultParams);
 
   return (
     <ParamsContext.Provider value={[state, dispatch]}>

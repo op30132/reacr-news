@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default function LanguageSelect({ languageList, onSelectChange, selected }) {
+const LanguageSelect = ({ languageList, onSelectChange, selected }) => {
+  
   return (
     <select value={selected} onChange={e => onSelectChange(e.target.value)}>
       {
@@ -11,3 +12,5 @@ export default function LanguageSelect({ languageList, onSelectChange, selected 
     </select>
   )
 }
+
+export default LanguageSelect

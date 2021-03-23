@@ -7,7 +7,7 @@ const defaultParams = {
   category: 'Business',
   q: '',
   pageSize: 10,
-  apiKey: '5c272dc78f954b94855e059b7e2dabc2'
+  apiKey: process.env.REACT_APP_API_KEY
 };
 
 const ParamsContextProvider = props => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom'
-
 import News from './News'
 import Documents from './Documents'
 
